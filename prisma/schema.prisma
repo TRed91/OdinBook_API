@@ -8,22 +8,28 @@ datasource db {
 }
 
 model User {
-  userId     Int    @id @default(autoincrement())
-  userName   String @unique
-  email      String @unique
+  userId   Int    @id @default(autoincrement())
+  userName String @unique
+  email    String @unique
+  password String
+
   followedBy User[] @relation("UserFollows")
   following  User[] @relation("UserFollows")
-  Like       Like[]
+  likes      Like[]
+  posts      Post[]
 }
 
 model Post {
   postId      Int      @id @default(autoincrement())
   text        String
-  time        DateTime
+  time        DateTime @default(now())
+  userId      Int
   commentedId Int?
-  commented   Post?    @relation("Comments", fields: [commentedId], references: [postId])
-  comments    Post[]   @relation("Comments")
-  Like        Like[]
+
+  user      User   @relation(fields: [userId], references: [userId])
+  commented Post?  @relation("Comments", fields: [commentedId], references: [postId])
+  comments  Post[] @relation("Comments")
+  likes     Like[]
 }
 
 model Like {
