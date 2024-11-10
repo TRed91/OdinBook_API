@@ -21,6 +21,17 @@ exports.userGetById = (userId) => {
     });
 }
 
+exports.userGetByName = (userName) => {
+    return prisma.user.findUnique({
+        where: { userName: userName },
+        select: {
+            userId: true,
+            userName: true,
+            password: true,
+        }
+    });
+}
+
 exports.userUpdate = (userId, userName, email) => {
     return prisma.user.update({
         where: { userId: userId },
