@@ -42,6 +42,11 @@ Post Route:
 Like Route:
 * get => /like/:postId => get likes by post
     + send { ok:bool, data?, message? }
+* get => /like/:postId/user/:userId => check if post is liked by user
+  + send { ok:bool, data?:bool, message? }
 * post => /like/:postId => likes a post
     + requires body: userId
     + sends { ok:bool, data: null, message }
+* delete => /like/:postId => likes a post
+  + requires body: userId
+  + sends { ok:bool, data: null, message }
