@@ -14,6 +14,10 @@ User Route:
     + requires Header: Authorization: Bearer Token
     + sends { ok:bool, data: null, message }
 
+* put => /user/:userId/follow/:followId => updated user data
+  + requires Header: Authorization: Bearer Token
+  + sends { ok:bool, data: null, message }
+
 * delete => /user/:userId => cascade deletes a user
     + requires Header: Authorization: Bearer Token
     + sends { ok: bool, data: null, message }

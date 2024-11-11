@@ -28,7 +28,7 @@ exports.userAdd = [
                 const result = await db.userCreate(username, hash, email);
                 console.log("User created: ", result);
                 response = ResponseFactory.success(result);
-                return res.status(200).json(response);
+                return res.status(201).json(response);
             } catch (error) {
                 console.error("User create error: ", error.message);
                 response = ResponseFactory.fail("Username or Email already exist");
@@ -74,7 +74,7 @@ exports.userUpdate = [
             const result = await db.userUpdate(userId, username, email)
             console.log("User Updates: ", result);
             response = ResponseFactory.success(result);
-            return res.status(200).json(response);
+            return res.status(201).json(response);
         } catch (error) {
             console.error("User create error: ", error.message);
             response = ResponseFactory.fail("Username or Email already exist");
@@ -82,6 +82,32 @@ exports.userUpdate = [
         }
     }
 ];
+
+exports.userAddFollow = async (req, res) => {
+    const userId = parseInt(req.params.userId);
+    const followId = parseInt(req.params.followId);
+    if (req.user.userId !== userId){
+        return res.status(401).json(
+            ResponseFactory.fail("Unauthorized action")
+        );
+    }
+    if (userId === followId){
+        return res.status(400).json(
+            ResponseFactory.fail("Attempting to follow self")
+        );
+    }
+    try {
+        const result = await db.userUpdateFollows(userId, followId);
+        return res.status(200).json(
+            ResponseFactory.success(result)
+        );
+    } catch (error) {
+        console.error("Connect follow error: ", error.message);
+        return res.status(500).json(
+            ResponseFactory.fail("Server Error")
+        );
+    }
+}
 
 exports.userDelete = async (req, res) => {
     try {

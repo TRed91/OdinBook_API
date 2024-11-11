@@ -15,7 +15,13 @@ exports.postGetOne = (postId) => {
         where: { postId: postId },
         include: {
             comments: true,
-            user: true,
+            user: {
+                select: {
+                    userId: true,
+                    userName: true,
+                    email: true,
+                }
+            }
         },
     });
 }
@@ -26,7 +32,10 @@ exports.postGetMany = (userId) => {
         select: {
             posts: true,
             followedBy: {
-                select: { posts: true }
+                select: {
+                    userName: true,
+                    posts: true
+                },
             },
         },
     });
