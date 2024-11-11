@@ -11,12 +11,18 @@ model User {
   userId   Int    @id @default(autoincrement())
   userName String @unique
   email    String @unique
-  password String
 
-  followedBy User[] @relation("UserFollows")
-  following  User[] @relation("UserFollows")
+  password   Password?
+  followedBy User[]    @relation("UserFollows")
+  following  User[]    @relation("UserFollows")
   likes      Like[]
   posts      Post[]
+}
+
+model Password {
+  password String
+  user     User   @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId   Int    @id @unique
 }
 
 model Post {
@@ -26,17 +32,17 @@ model Post {
   userId      Int
   commentedId Int?
 
-  user      User   @relation(fields: [userId], references: [userId])
-  commented Post?  @relation("Comments", fields: [commentedId], references: [postId])
+  user      User   @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  commented Post?  @relation("Comments", fields: [commentedId], references: [postId], onDelete: Cascade)
   comments  Post[] @relation("Comments")
   likes     Like[]
 }
 
 model Like {
   userId Int
-  user   User @relation(fields: [userId], references: [userId])
+  user   User @relation(fields: [userId], references: [userId], onDelete: Cascade)
   postId Int
-  post   Post @relation(fields: [postId], references: [postId])
+  post   Post @relation(fields: [postId], references: [postId], onDelete: Cascade)
 
   @@id([postId, userId])
 }

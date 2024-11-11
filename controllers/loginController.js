@@ -12,7 +12,7 @@ module.exports = async (req, res) => {
                 ResponseFactory.fail("User does not exist")
             );
         }
-        const isMath = await bcrypt.compare(password, user.password);
+        const isMath = await bcrypt.compare(password, user.password.password);
         if (!isMath) {
             return res.status(403).json(
                 ResponseFactory.fail("Wrong Password")

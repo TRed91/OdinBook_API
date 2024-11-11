@@ -4,8 +4,12 @@ exports.userCreate = (userName, password, email) => {
     return prisma.user.create({
         data: {
             userName: userName,
-            password: password,
             email: email,
+            password: {
+                create: {
+                    password: password,
+                }
+            }
         }
     });
 }

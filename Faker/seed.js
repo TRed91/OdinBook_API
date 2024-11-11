@@ -7,6 +7,8 @@ async function main() {
 
     await prisma.$connect();
     await prisma.user.deleteMany();
+    await prisma.post.deleteMany();
+    await prisma.like.deleteMany();
 
     const data = []
 
@@ -17,13 +19,18 @@ async function main() {
         const userName = lastName + firstName;
         const email = faker.internet.email({ firstName: firstName, lastName: lastName });
         const password = faker.internet.password();
-        data.push({ userName, email, password });
+        await prisma.user.create({
+            data: {
+                userName: userName,
+                email: email,
+                password: {
+                    create: {
+                        password: password,
+                    },
+                },
+            },
+        });
     }
-
-    await prisma.user.createMany({
-        data: data,
-        skipDuplicates: true,
-    });
 }
 
 main()
