@@ -20,6 +20,11 @@ exports.postGetOne = (postId) => {
                     userId: true,
                     userName: true,
                     email: true,
+                },
+            },
+            _count: {
+                select: {
+                    likes: true,
                 }
             }
         },
@@ -30,11 +35,27 @@ exports.postGetMany = (userId) => {
     return prisma.user.findUnique({
         where: { userId: userId },
         select: {
-            posts: true,
+            posts: {
+                include: {
+                    _count: {
+                        select: {
+                            likes: true
+                        },
+                    },
+                },
+            },
             followedBy: {
                 select: {
                     userName: true,
-                    posts: true
+                    posts: {
+                        include: {
+                            _count: {
+                                select: {
+                                    likes: true
+                                },
+                            },
+                        },
+                    }
                 },
             },
         },
