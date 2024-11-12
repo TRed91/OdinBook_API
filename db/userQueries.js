@@ -31,7 +31,18 @@ exports.userGetByName = (userName) => {
         select: {
             userId: true,
             userName: true,
+            email: true,
             password: true,
+        }
+    });
+}
+
+exports.userGetByEmail = email => {
+    return prisma.user.findUnique({
+        where: { email: email },
+        select: {
+            userId: true,
+            userName: true,
         }
     });
 }

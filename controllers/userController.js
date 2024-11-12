@@ -25,13 +25,25 @@ exports.userAdd = [
                 return res.status(500).json(response);
             }
             try {
+                let user = await db.userGetByName(username);
+                if (user) {
+                    return res.status(400).json(
+                        ResponseFactory.fail(`Username already exists`)
+                    );
+                }
+                user = await db.userGetByEmail(email);
+                if (user) {
+                    return res.status(400).json(
+                        ResponseFactory.fail(`Email already exists`)
+                    );
+                }
                 const result = await db.userCreate(username, hash, email);
                 console.log("User created: ", result);
                 response = ResponseFactory.success(result);
                 return res.status(201).json(response);
             } catch (error) {
                 console.error("User create error: ", error.message);
-                response = ResponseFactory.fail("Username or Email already exist");
+                response = ResponseFactory.fail("Internal Error");
                 return res.status(500).json(response);
             }
         });
