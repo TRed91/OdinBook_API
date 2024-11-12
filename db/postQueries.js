@@ -31,7 +31,7 @@ exports.postGetOne = (postId) => {
     });
 }
 
-exports.postGetMany = (userId) => {
+exports.postGetRecent = (userId) => {
     return prisma.user.findUnique({
         where: { userId: userId },
         select: {
@@ -43,8 +43,9 @@ exports.postGetMany = (userId) => {
                         },
                     },
                 },
+                orderBy: { time: "desc" },
             },
-            followedBy: {
+            following: {
                 select: {
                     userName: true,
                     posts: {
@@ -55,11 +56,28 @@ exports.postGetMany = (userId) => {
                                 },
                             },
                         },
-                    }
+                        orderBy: { time: "desc" },
+                    },
                 },
             },
         },
     });
+}
+
+exports.getPostsByUserId = async (userId) => {
+    return prisma.post.findMany({
+        where: { userId: userId },
+        include: {
+            _count: {
+                select: {
+                    likes: true,
+                    comments: true,
+                },
+            },
+        },
+        orderBy: { time: "desc" },
+        take: 5,
+    })
 }
 
 exports.postUpdate = (postId, text) => {

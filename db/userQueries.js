@@ -1,10 +1,11 @@
 const prisma = require('./prismaClient');
 
-exports.userCreate = (userName, password, email) => {
+exports.userCreate = (userName, password, email, avatarUrl) => {
     return prisma.user.create({
         data: {
             userName: userName,
             email: email,
+            avatarUrl: avatarUrl,
             password: {
                 create: {
                     password: password,
@@ -21,6 +22,7 @@ exports.userGetById = (userId) => {
             userId: true,
             userName: true,
             email: true,
+            avatarUrl: true,
         }
     });
 }
@@ -32,6 +34,7 @@ exports.userGetByName = (userName) => {
             userId: true,
             userName: true,
             email: true,
+            avatarUrl: true,
             password: true,
         }
     });
@@ -63,6 +66,19 @@ exports.userUpdateFollows = (userId, followId) => {
         data: {
             following: {
                 connect: {
+                    userId: followId,
+                },
+            },
+        },
+    });
+}
+
+exports.userRemoveFollows = (userId, followId) => {
+    return prisma.user.update({
+        where: { userId: userId },
+        data: {
+            following: {
+                disconnect: {
                     userId: followId,
                 },
             },

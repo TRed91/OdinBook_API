@@ -44,6 +44,31 @@ exports.getPost = async (req, res) => {
     }
 }
 
+exports.getPostsByUser = async (req, res) => {
+    const userId = parseInt(req.params.userId);
+    if (req.user.userId !== userId){
+        return res.status(401).json(
+            ResponseFactory.fail("Unauthorized")
+        );
+    }
+    try {
+        const posts = await  db.getPostsByUserId(userId);
+        if (!posts) {
+            return res.status(404).json(
+                ResponseFactory.fail("No posts found")
+            );
+        }
+        return res.status(200).json(
+            ResponseFactory.success(posts)
+        );
+    } catch (error) {
+        console.error("Posts get error: ", error.message);
+        return res.status(500).json(
+            ResponseFactory.fail("Server Error")
+        );
+    }
+}
+
 exports.getPostsByUserAndFollows = async (req, res) => {
     const userId = parseInt(req.params.userId);
     if (req.user.userId !== userId) {
@@ -52,7 +77,7 @@ exports.getPostsByUserAndFollows = async (req, res) => {
         );
     }
     try {
-        const posts = await db.postGetMany(userId);
+        const posts = await db.postGetRecent(userId);
         if (!posts) {
             return res.status(404).json(
                 ResponseFactory.fail("User not found")

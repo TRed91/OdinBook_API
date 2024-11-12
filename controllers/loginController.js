@@ -37,6 +37,7 @@ exports.loginPost = async (req, res) => {
                         userId : user.userId,
                         userName: user.userName,
                         email: user.email,
+                        avatarUrl: user.avatarUrl,
                     },
                 })
             );

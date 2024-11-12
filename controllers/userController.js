@@ -1,5 +1,6 @@
 const { validationResult } = require('express-validator');
 const { validationCreate, validationUpdate } = require('./validation');
+const sha256 = require('js-sha256');
 const bcrypt = require('bcrypt');
 const db = require("../db/userQueries");
 const ResponseFactory = require("./ResponseFactory");
@@ -37,7 +38,12 @@ exports.userAdd = [
                         ResponseFactory.fail(`Email already exists`)
                     );
                 }
-                const result = await db.userCreate(username, hash, email);
+
+                const address = String(email).trim().toLowerCase();
+                const emailHash = sha256(address);
+                const avatarUrl = `https://www.gravatar.com/avatar/${ emailHash }`;
+
+                const result = await db.userCreate(username, hash, email, avatarUrl);
                 console.log("User created: ", result);
                 response = ResponseFactory.success(result);
                 return res.status(201).json(response);
