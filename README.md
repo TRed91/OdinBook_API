@@ -39,7 +39,7 @@ Post Route:
     + requires Header: Authorization: Bearer Token
     + sends { ok:bool, data: null, message }
 
-Like Route:
+LikeEntity Route:
 * get => /like/:postId => get likes by post
     + send { ok:bool, data?, message? }
 * get => /like/:postId/user/:userId => check if post is liked by user

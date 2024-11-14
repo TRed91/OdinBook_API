@@ -18,7 +18,7 @@ CREATE TABLE "Post" (
 );
 
 -- CreateTable
-CREATE TABLE "Like" (
+CREATE TABLE "LikeEntity" (
     "userId" INTEGER NOT NULL,
     "postId" INTEGER NOT NULL,
 
@@ -47,10 +47,10 @@ CREATE INDEX "_UserFollows_B_index" ON "_UserFollows"("B");
 ALTER TABLE "Post" ADD CONSTRAINT "Post_commentedId_fkey" FOREIGN KEY ("commentedId") REFERENCES "Post"("postId") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Like" ADD CONSTRAINT "Like_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "LikeEntity" ADD CONSTRAINT "Like_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Like" ADD CONSTRAINT "Like_postId_fkey" FOREIGN KEY ("postId") REFERENCES "Post"("postId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "LikeEntity" ADD CONSTRAINT "Like_postId_fkey" FOREIGN KEY ("postId") REFERENCES "Post"("postId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_UserFollows" ADD CONSTRAINT "_UserFollows_A_fkey" FOREIGN KEY ("A") REFERENCES "User"("userId") ON DELETE CASCADE ON UPDATE CASCADE;
