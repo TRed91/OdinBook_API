@@ -20,11 +20,13 @@ exports.postGetOne = (postId) => {
                     userId: true,
                     userName: true,
                     email: true,
+                    avatarUrl: true,
                 },
             },
             _count: {
                 select: {
                     likes: true,
+                    comments: true,
                 }
             }
         },
@@ -37,9 +39,16 @@ exports.postGetRecent = (userId) => {
         select: {
             posts: {
                 include: {
+                    user: {
+                        select: {
+                            userName: true,
+                            avatarUrl: true,
+                        }
+                    },
                     _count: {
                         select: {
-                            likes: true
+                            likes: true,
+                            comments: true,
                         },
                     },
                 },
@@ -47,12 +56,18 @@ exports.postGetRecent = (userId) => {
             },
             following: {
                 select: {
-                    userName: true,
                     posts: {
                         include: {
+                            user: {
+                                select: {
+                                    userName: true,
+                                    avatarUrl: true,
+                                },
+                            },
                             _count: {
                                 select: {
-                                    likes: true
+                                    likes: true,
+                                    comments: true,
                                 },
                             },
                         },
@@ -68,6 +83,7 @@ exports.getPostsByUserId = async (userId) => {
     return prisma.post.findMany({
         where: { userId: userId },
         include: {
+            user: true,
             _count: {
                 select: {
                     likes: true,
