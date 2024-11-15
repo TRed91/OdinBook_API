@@ -50,6 +50,10 @@ exports.userGetByEmail = email => {
     });
 }
 
+exports.userGetMany = () => {
+    return prisma.user.findMany();
+}
+
 exports.userUpdate = (userId, userName, email) => {
     return prisma.user.update({
         where: { userId: userId },

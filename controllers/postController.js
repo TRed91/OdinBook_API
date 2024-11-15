@@ -6,6 +6,12 @@ exports.createPost = async (req, res) => {
     const text = req.body.text;
     const commentedId = parseInt(req.body.commentedId) || null ;
 
+    if (!text) {
+        return res.status(400).json(
+            ResponseFactory.fail("Post can't be empty")
+        )
+    }
+
     if (req.user.userId !== userId) {
         return res.status(401).json(
             ResponseFactory.fail("Unauthorized action")
@@ -46,11 +52,7 @@ exports.getPost = async (req, res) => {
 
 exports.getPostsByUser = async (req, res) => {
     const userId = parseInt(req.params.userId);
-    if (req.user.userId !== userId){
-        return res.status(401).json(
-            ResponseFactory.fail("Unauthorized")
-        );
-    }
+
     try {
         const posts = await  db.getPostsByUserId(userId);
         if (!posts) {

@@ -127,6 +127,18 @@ exports.userAddFollow = async (req, res) => {
     }
 }
 
+exports.userGetAll = async (req, res) => {
+    try {
+        const users = await db.userGetMany();
+        return res.status(200).json(
+            ResponseFactory.success(users)
+        );
+    } catch (error) {
+        console.error("Error retrieving users", error.message);
+        return res.status(500).json(ResponseFactory.fail("Server Error"));
+    }
+}
+
 exports.userDelete = async (req, res) => {
     try {
         const userId = parseInt(req.params.userId);
