@@ -13,11 +13,13 @@ model User {
   email     String @unique
   avatarUrl String
 
-  password   Password?
-  followedBy User[]       @relation("UserFollows")
-  following  User[]       @relation("UserFollows")
-  likes      LikeEntity[]
-  posts      Post[]
+  password        Password?
+  incomingRequest User[]       @relation("followRequests")
+  outgoingRequest User[]       @relation("followRequests")
+  followedBy      User[]       @relation("UserFollows")
+  following       User[]       @relation("UserFollows")
+  likes           LikeEntity[]
+  posts           Post[]
 }
 
 model Password {

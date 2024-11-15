@@ -101,6 +101,32 @@ exports.userUpdate = [
     }
 ];
 
+exports.userRequestFollow = async (req, res) => {
+    const userId = parseInt(req.params.userId);
+    const followId = parseInt(req.params.followId);
+    if (req.user.userId !== userId){
+        return res.status(401).json(
+            ResponseFactory.fail("Unauthorized action")
+        );
+    }
+    if (userId === followId){
+        return res.status(400).json(
+            ResponseFactory.fail("Attempting to follow self")
+        );
+    }
+    try {
+        const result = await db.userUpdatePendingFollows(userId, followId);
+        return res.status(200).json(
+            ResponseFactory.success(result)
+        );
+    } catch (error) {
+        console.error("Pending follow error: ", error.message);
+        return res.status(500).json(
+            ResponseFactory.fail("Server Error")
+        );
+    }
+}
+
 exports.userAddFollow = async (req, res) => {
     const userId = parseInt(req.params.userId);
     const followId = parseInt(req.params.followId);

@@ -23,6 +23,7 @@ exports.userGetById = (userId) => {
             userName: true,
             email: true,
             avatarUrl: true,
+            incomingRequest: true,
         }
     });
 }
@@ -64,6 +65,19 @@ exports.userUpdate = (userId, userName, email) => {
     });
 }
 
+exports.userUpdatePendingFollows = (userId, followId) => {
+    return prisma.user.update({
+        where: { userId: userId },
+        data: {
+            incomingRequest: {
+                connect: {
+                    userId: followId,
+                },
+            },
+        },
+    });
+}
+
 exports.userUpdateFollows = (userId, followId) => {
     return prisma.user.update({
         where: { userId: userId },
@@ -73,6 +87,11 @@ exports.userUpdateFollows = (userId, followId) => {
                     userId: followId,
                 },
             },
+            incomingRequest: {
+                disconnect: {
+                    userId: followId,
+                }
+            }
         },
     });
 }
