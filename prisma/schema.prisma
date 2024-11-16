@@ -14,11 +14,11 @@ model User {
   avatarUrl String
 
   password        Password?
-  incomingRequest User[]       @relation("followRequests")
-  outgoingRequest User[]       @relation("followRequests")
-  followedBy      User[]       @relation("UserFollows")
-  following       User[]       @relation("UserFollows")
-  likes           LikeEntity[]
+  incomingRequest User[]    @relation("followRequests")
+  outgoingRequest User[]    @relation("followRequests")
+  followedBy      User[]    @relation("UserFollows")
+  following       User[]    @relation("UserFollows")
+  likes           Like[]
   posts           Post[]
 }
 
@@ -35,13 +35,13 @@ model Post {
   userId      Int
   commentedId Int?
 
-  user      User         @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  commented Post?        @relation("Comments", fields: [commentedId], references: [postId], onDelete: Cascade)
-  comments  Post[]       @relation("Comments")
-  likes     LikeEntity[]
+  user      User   @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  commented Post?  @relation("Comments", fields: [commentedId], references: [postId], onDelete: Cascade)
+  comments  Post[] @relation("Comments")
+  likes     Like[]
 }
 
-model LikeEntity {
+model Like {
   userId Int
   user   User @relation(fields: [userId], references: [userId], onDelete: Cascade)
   postId Int
