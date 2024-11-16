@@ -23,6 +23,8 @@ exports.loginPost = async (req, res) => {
             userName: user.userName,
             }}
 
+        const userRes = await db.userGetById(user.userId);
+
         jwt.sign(payload, process.env.PASSPORT_SECRET, { expiresIn: "1d" },(err, token) => {
             if (err) {
                 console.error("JWT sign error: ", err.message);
@@ -33,12 +35,7 @@ exports.loginPost = async (req, res) => {
             return res.status(200).json(
                 ResponseFactory.success({
                     token: token,
-                    user: {
-                        userId : user.userId,
-                        userName: user.userName,
-                        email: user.email,
-                        avatarUrl: user.avatarUrl,
-                    },
+                    user: userRes,
                 })
             );
         })

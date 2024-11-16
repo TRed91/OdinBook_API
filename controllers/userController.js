@@ -115,12 +115,46 @@ exports.userRequestFollow = async (req, res) => {
         );
     }
     try {
-        const result = await db.userUpdatePendingFollows(userId, followId);
+        let isFollowing = false;
+        const followingUsers = await db.userGetFollowing(userId);
+        followingUsers.following.forEach(f => {
+            if (f.userId === followId){
+                isFollowing = true;
+            }
+        })
+        if (isFollowing) {
+            return res.status(400).json(
+                ResponseFactory.fail("Already following that user")
+            );
+        }
+        const result = await db.addRequest(userId, followId);
         return res.status(200).json(
             ResponseFactory.success(result)
         );
     } catch (error) {
         console.error("Pending follow error: ", error.message);
+        return res.status(500).json(
+            ResponseFactory.fail("Server Error")
+        );
+    }
+}
+
+exports.userDeclineFollow = async (req, res) => {
+    const userId = parseInt(req.params.userId);
+    const requestId = parseInt(req.params.requestId);
+
+    if (req.user.userId !== userId){
+        return res.status(401).json(
+            ResponseFactory.fail("Unauthorized action")
+        );
+    }
+    try {
+        const result = await db.removeRequest(userId, requestId);
+        return res.status(200).json(
+            ResponseFactory.success(result)
+        );
+    } catch (error) {
+        console.error("Decline Request error: ", error.message);
         return res.status(500).json(
             ResponseFactory.fail("Server Error")
         );
@@ -150,6 +184,27 @@ exports.userAddFollow = async (req, res) => {
         return res.status(500).json(
             ResponseFactory.fail("Server Error")
         );
+    }
+}
+
+exports.userRemoveFollow = async (req, res) => {
+    const userId = parseInt(req.params.userId);
+    const followId = parseInt(req.params.followId);
+    if (req.user.userId !== userId){
+        return res.status(401).json(
+            ResponseFactory.fail("Unauthorized action")
+        );
+    }
+    try {
+        const result = await db.userRemoveFollows(userId, followId);
+        return res.status(200).json(
+            ResponseFactory.success(result)
+        )
+    } catch (error) {
+        console.error("Remove follow error: ", error.message);
+        return res.status(500).json(
+            ResponseFactory.fail("Server Error")
+        )
     }
 }
 

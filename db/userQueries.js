@@ -24,6 +24,8 @@ exports.userGetById = (userId) => {
             email: true,
             avatarUrl: true,
             incomingRequest: true,
+            outgoingRequest: true,
+            following: true,
         }
     });
 }
@@ -65,13 +67,26 @@ exports.userUpdate = (userId, userName, email) => {
     });
 }
 
-exports.userUpdatePendingFollows = (userId, followId) => {
+exports.addRequest = (userId, followId) => {
+    return prisma.user.update({
+        where: { userId: userId },
+        data: {
+            outgoingRequest: {
+                connect: {
+                    userId: followId,
+                },
+            },
+        },
+    });
+}
+
+exports.removeRequest = (userId, requestId) => {
     return prisma.user.update({
         where: { userId: userId },
         data: {
             incomingRequest: {
-                connect: {
-                    userId: followId,
+                disconnect: {
+                    userId: requestId,
                 },
             },
         },
@@ -82,7 +97,7 @@ exports.userUpdateFollows = (userId, followId) => {
     return prisma.user.update({
         where: { userId: userId },
         data: {
-            following: {
+            followedBy: {
                 connect: {
                     userId: followId,
                 },
@@ -113,4 +128,17 @@ exports.userDelete = (userId) => {
     return prisma.user.delete({
         where: { userId: userId },
     })
+}
+
+exports.userGetFollowing = (userId) => {
+    return prisma.user.findUnique({
+        where: { userId: userId },
+        select: {
+            following: {
+                select: {
+                    userId: true,
+                },
+            },
+        },
+    });
 }
