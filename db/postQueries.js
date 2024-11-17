@@ -5,7 +5,7 @@ exports.postCreate = (userId, text, commentedId) => {
         data: {
             userId: userId,
             text: text,
-            commentedId: commentedId || null,
+            commentedId: commentedId || undefined,
         },
     });
 }
@@ -14,7 +14,24 @@ exports.postGetOne = (postId) => {
     return prisma.post.findUnique({
         where: { postId: postId },
         include: {
-            comments: true,
+            comments: {
+                include: {
+                    user: {
+                        select: {
+                            userId: true,
+                            userName: true,
+                            email: true,
+                            avatarUrl: true,
+                        },
+                    },
+                    _count: {
+                        select: {
+                            likes: true,
+                            comments: true,
+                        },
+                    },
+                },
+            },
             user: {
                 select: {
                     userId: true,
@@ -27,8 +44,8 @@ exports.postGetOne = (postId) => {
                 select: {
                     likes: true,
                     comments: true,
-                }
-            }
+                },
+            },
         },
     });
 }
