@@ -1,7 +1,24 @@
 # OdinBook_API
 Odin Project Assignment
 
-# Routes
+## Implementation
+
+### Rest API
+THe Rest API is implemented using Node.js and express.js with plain javascript.
+
+### Authentication and Security
+The API performs validation on any post requests.
+Authentication is handled via JWS Tokens.
+Passwords are encrypted using the bcrypt library before being stored to the Database.
+
+### Database
+I'm using a postgres database to persist data.
+Also I'm leveraging prisma orm for easier db querying and fast db migration.
+
+### Avatars
+I'm using the Gravatar API to use user avatars.
+
+## Routes
 User Route:
 * post  => /user => create new user
     + requires body: username, email, pw, cpw
